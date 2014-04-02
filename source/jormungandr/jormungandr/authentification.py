@@ -8,7 +8,7 @@ from jormungandr import i_manager
 import datetime, time
 import base64
 from navitiacommon.models import User, Instance, db
-from jormungandr.stat_manager import StatManager
+#from jormungandr.stat_manager import StatManager
 
 
 def authentification_required(func):
@@ -42,14 +42,7 @@ def authentification_required(func):
                 pass
 
         if not region or authenticate(region, 'ALL', abort=True):
-            start_time = time.time()
-            func_call = func(*args, **kwargs)
-            i_manager.stat_manager.manage_stat(start_time, func_call)
-            return func_call
-
-            #return func(*args, **kwargs)
-        #Appeler la méthode (decorator) qui envoi les informations: flask.request contient des paramètres.
-        #STAT-2
+            return func(*args, **kwargs)
 
     return wrapper
 
