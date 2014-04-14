@@ -1,7 +1,7 @@
 # encoding: utf-8
 from flask_restful import reqparse, abort
 import flask_restful
-from flask import current_app, request
+from flask import current_app, request, g
 from functools import wraps
 from jormungandr.exceptions import RegionNotFound
 from jormungandr import i_manager
@@ -66,6 +66,8 @@ def get_token():
 
 
 def authenticate(region, api, abort=False):
+    #Here we initialize user
+    g.user = None
     if 'PUBLIC' in current_app.config \
             and current_app.config['PUBLIC']:
         # si jormungandr est en mode public: on zap l'authentification
@@ -84,9 +86,11 @@ def authenticate(region, api, abort=False):
             return False if not instance else instance.first().is_free
 
     user = User.get_from_token(token, datetime.datetime.now())
+
     if user:
-        #STAT-1 Ajouter flask variable (global) pour pouvoir garder les valeurs
+        #Here we keep user_id to be used in stat
         if user.has_access(region, api):
+            g.user = {"user_id": user.id}
             return True
         else:
             if abort:
