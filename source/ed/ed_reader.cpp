@@ -311,6 +311,7 @@ void EdReader::fill_stop_points(nt::Data& data, pqxx::work& work){
        "pr.audible_announcement as audible_announcement,"
        "pr.appropriate_escort as appropriate_escort,"
        "pr.appropriate_signage as appropriate_signage "
+       "sp.platform_code as platform_code "
        "FROM navitia.stop_point as sp, navitia.properties  as pr "
        "where sp.properties_id=pr.id";
 
@@ -322,6 +323,7 @@ void EdReader::fill_stop_points(nt::Data& data, pqxx::work& work){
         const_it["comment"].to(sp->comment);
         const_it["fare_zone"].to(sp->fare_zone);
         const_it["external_code"].to(sp->codes["external_code"]);
+        const_it["platform_code"].to(sp->platform_code);
         sp->coord.set_lon(const_it["lon"].as<double>());
         sp->coord.set_lat(const_it["lat"].as<double>());
         if (const_it["wheelchair_boarding"].as<bool>()){
